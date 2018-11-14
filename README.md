@@ -2,7 +2,7 @@
 
 ### Getting started
 
-1. Clone the repo: `git clone`
+1. Clone the repo: `git clone git@github.com:marwanali1/final_project.git`
 2. cd into the repo
 3. virtualenv setup:
     * If don't have virtualenv installed, first install virtualenv: `pip install virtualenv`
