@@ -1,4 +1,5 @@
 import datetime
+import pandas as pd
 
 
 class GenrePredictor:
@@ -30,8 +31,18 @@ if __name__ == "__main__":
     print("START")
     print(datetime.datetime.time(datetime.datetime.now()))
 
-    predictor = GenrePredictor()
-    predictor.predict()
+    # Load the data set in the csv to a Pandas data frame
+    msd_genre_df = pd.read_csv('data/msd_genre_dataset.csv')
+
+    # Print all the columns in the data set
+    col_names = list(msd_genre_df.columns.values)
+    print(col_names)
+
+    # Print the first row of the data set
+    print(msd_genre_df.iloc[0])
+
+    # predictor = GenrePredictor()
+    # predictor.predict()
     # predictor.cross_validate()
 
     print('\nFINISH')
