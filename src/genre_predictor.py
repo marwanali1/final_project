@@ -66,6 +66,26 @@ class GenrePredictor:
         score = accuracy_score(true_genres, predictions)
         print("\nPercent correctly predicted: {}".format(score))
 
+    # def optimize(self):
+    #     param_grid = {}
+    #
+    #     features = ['loudness', 'tempo', 'time_signature', 'key', 'mode', 'duration', 'avg_timbre1', 'avg_timbre2',
+    #                 'avg_timbre3', 'avg_timbre4', 'avg_timbre5', 'avg_timbre6', 'avg_timbre7', 'avg_timbre8',
+    #                 'avg_timbre9',
+    #                 'avg_timbre10', 'avg_timbre11', 'avg_timbre12', 'var_timbre1', 'var_timbre2', 'var_timbre3',
+    #                 'var_timbre4',
+    #                 'var_timbre5', 'var_timbre6', 'var_timbre7', 'var_timbre8', 'var_timbre9', 'var_timbre10',
+    #                 'var_timbre11',
+    #                 'var_timbre12']
+    #
+    #     unlabled_train_set = self.train_data[features]
+    #     gs = GridSearchCV(estimator=LogisticRegression, param_grid=param_grid, scoring='accuracy', cv=3, )
+    #     gs.fit(unlabled_train_set)
+    #
+    #     print("\n")
+    #     print(gs.best_score_)
+    #     print(gs.best_params_['accuracy'])
+
     # def cross_validate(self):
     #     kf = KFold(n_splits=3)
     #     genres = pd.DataFrame(self.train_data['genre']).values.reshape(-1, ).tolist()
@@ -89,7 +109,20 @@ class GenrePredictor:
 
         genres = pd.DataFrame(self.train_data['genre']).values.reshape(-1, ).tolist()
 
-        classifier = LogisticRegression()
+        class_weights = {
+            'classic pop and rock': 1,
+            'classical': 2,
+            'dance and electronica': 2,
+            'folk': 1,
+            'hip-hop': 3,
+            'jazz and blues': 2,
+            'metal': 2,
+            'pop': 2,
+            'punk': 2,
+            'soul and reggae': 2
+        }
+
+        classifier = LogisticRegression(penalty='l1', class_weight=class_weights, solver='liblinear', multi_class='auto')
         classifier.fit(unlabled_train_set, genres)
         predictions = classifier.predict(unlabled_test_set)
 
@@ -104,5 +137,6 @@ if __name__ == "__main__":
     predictor = GenrePredictor()
     predictor.predict()
     # predictor.cross_validate()
+    # predictor.optimize()
 
     print("\nFINISH TIME: {}".format(datetime.time(datetime.now())))
