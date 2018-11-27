@@ -1,0 +1,7 @@
+mxm dataset has 237,662 songs in bag of words format.
+
+each track is described in terms of the top 5000 words.
+
+words were chosen based on relative importance
+
+the mxm dataset contains no genre lables, the plan is to generate a new dataset from the mxm dataset with each track labeled with the matching MSD track id.
