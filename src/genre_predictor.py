@@ -3,7 +3,8 @@ import pandas as pd
 from datetime import datetime
 
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, f1_score, recall_score
+from sklearn.model_selection import KFold
 
 
 class GenrePredictor:
@@ -12,6 +13,19 @@ class GenrePredictor:
         self.train_data = None
         self.test_data = None
         self.__load_datasets()
+
+        self.class_weights = {
+            'classic pop and rock': 1,
+            'classical': 2,
+            'dance and electronica': 2,
+            'folk': 1,
+            'hip-hop': 3,
+            'jazz and blues': 2,
+            'metal': 2,
+            'pop': 2,
+            'punk': 2,
+            'soul and reggae': 2
+        }
 
     @staticmethod
     def create_datasets():
@@ -60,14 +74,48 @@ class GenrePredictor:
         if true_genres is None:
             true_genres = pd.DataFrame(self.test_data['genre']).values.reshape(-1, ).tolist()
 
+        # Bad metric for this dataset since it's imbalanced
         accuracy = accuracy_score(true_genres, predictions)
         print("\nAccuracy score: {}".format(accuracy))
 
-        precision = precision_score(true_genres, predictions, average='weighted')
+        # A measure of a classifiers exactness
+        precision = precision_score(true_genres, predictions, average='micro')
         print("Precision Score: {}".format(precision))
 
-        f1 = f1_score(true_genres, predictions, average='weighted')
+        # A measure of a classifiers completeness
+        recall = recall_score(true_genres, predictions, average='micro')
+        print("Recall Score: {}".format(recall))
+
+        # A weighted average of precision and recall
+        f1 = f1_score(true_genres, predictions, average='micro')
         print("F1 Score: {}".format(f1))
+
+    def cross_validate(self):
+        features = ['loudness', 'tempo', 'time_signature', 'key', 'mode', 'duration', 'avg_timbre1', 'avg_timbre2',
+                    'avg_timbre3', 'avg_timbre4', 'avg_timbre5', 'avg_timbre6', 'avg_timbre7', 'avg_timbre8',
+                    'avg_timbre9',
+                    'avg_timbre10', 'avg_timbre11', 'avg_timbre12', 'var_timbre1', 'var_timbre2', 'var_timbre3',
+                    'var_timbre4',
+                    'var_timbre5', 'var_timbre6', 'var_timbre7', 'var_timbre8', 'var_timbre9', 'var_timbre10',
+                    'var_timbre11',
+                    'var_timbre12']
+
+        df = self.train_data[features]
+        kf = KFold(n_splits=3, shuffle=True, random_state=2)
+        splits = kf.split(df)
+
+        classifier = LogisticRegression(penalty='l1', solver='liblinear', multi_class='auto', max_iter=300)
+        for result in splits:
+            train = df.iloc[result[0]]
+            test = df.iloc[result[1]]
+
+            train_genres = pd.DataFrame(self.train_data.iloc[train.index.values].genre).values.reshape(-1, ).tolist()
+            true_test_genres = pd.DataFrame(self.train_data.iloc[test.index.values].genre).values.reshape(-1, ).tolist()
+
+            classifier.fit(train, train_genres)
+            predictions = classifier.predict(test)
+
+            self.__evaluate(predictions=predictions, true_genres=true_test_genres)
 
     def predict(self):
         features = ['loudness', 'tempo', 'time_signature', 'key', 'mode', 'duration', 'avg_timbre1', 'avg_timbre2',
@@ -84,20 +132,7 @@ class GenrePredictor:
 
         genres = pd.DataFrame(self.train_data['genre']).values.reshape(-1, ).tolist()
 
-        class_weights = {
-            'classic pop and rock': 1,
-            'classical': 2,
-            'dance and electronica': 2,
-            'folk': 1,
-            'hip-hop': 3,
-            'jazz and blues': 2,
-            'metal': 2,
-            'pop': 2,
-            'punk': 2,
-            'soul and reggae': 2
-        }
-
-        classifier = LogisticRegression(penalty='l1', class_weight=class_weights, solver='liblinear', multi_class='auto')
+        classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto')
         classifier.fit(unlabled_train_set, genres)
         predictions = classifier.predict(unlabled_test_set)
 
@@ -112,6 +147,5 @@ if __name__ == "__main__":
     predictor = GenrePredictor()
     predictor.predict()
     # predictor.cross_validate()
-    # predictor.optimize()
 
     print("\nFINISH TIME: {}".format(datetime.time(datetime.now())))
