@@ -3,6 +3,9 @@ import pandas as pd
 from datetime import datetime
 
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, recall_score
 from sklearn.model_selection import KFold
 
@@ -104,7 +107,10 @@ class GenrePredictor:
         kf = KFold(n_splits=3, shuffle=True, random_state=2)
         splits = kf.split(df)
 
-        classifier = LogisticRegression(penalty='l1', solver='liblinear', multi_class='auto', max_iter=300)
+        classifier = RandomForestClassifier(n_estimators=250, random_state=0)
+        # classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto', max_iter=300)
+        # classifier = DecisionTreeClassifier(max_depth=11, max_leaf_no .des=200, random_state=0)
+        # classifier = KNeighborsClassifier(n_neighbors=10)
         for result in splits:
             train = df.iloc[result[0]]
             test = df.iloc[result[1]]
@@ -132,7 +138,11 @@ class GenrePredictor:
 
         genres = pd.DataFrame(self.train_data['genre']).values.reshape(-1, ).tolist()
 
-        classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto')
+        classifier = RandomForestClassifier(n_estimators=250, random_state=0)
+        # classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto', max_iter=300)
+        # classifier = DecisionTreeClassifier(max_depth=11, max_leaf_nodes=200, random_state=0)
+        # classifier = KNeighborsClassifier(n_neighbors=10)
+
         classifier.fit(unlabled_train_set, genres)
         predictions = classifier.predict(unlabled_test_set)
 
