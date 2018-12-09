@@ -10,5 +10,4 @@
 4. Activate the virtualenv: `source venv/bin/activate`
 5. Install the project requirements: `pip install -r requirements.txt`
 6. Running the code:
-    * To run the genre predictor code: `python src/genre_predictor.py`
-    * To run the song recommender code: `python src/song_recommender.py`
+    * To run the audio genre predictor code: `python src/genre_predictor.py`
