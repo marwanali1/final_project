@@ -169,7 +169,7 @@ if __name__ == '__main__':
         reloadtestData = False
     
     if(os.path.exists("../data/lyric_data/train_labels.dat") and os.path.exists("../data/lyric_data/train_tracks.dat") and os.path.exists("../data/lyric_data/ancillary_data/train_track_ids.dat")):
-        reloadTrainData = True
+        reloadTrainData = False
     
     if(os.path.exists("../data/lyric_data/ancillary_data/genremap.dat")):
         reloadGenreMap = False
