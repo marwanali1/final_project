@@ -11,3 +11,4 @@
 5. Install the project requirements: `pip install -r requirements.txt`
 6. Running the code:
     * To run the audio genre predictor code: `python src/genre_predictor.py`
+    * To run the lyric genre predictor code: `python src/lyric_genre_predictor.py`
