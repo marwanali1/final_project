@@ -37,23 +37,27 @@ def load_data(reloadGenreMap,reloadTrainData,reloadtestData):
         genremap = None
         
         if(reloadTrainData):
-            print("Regenerating Pickled Training Data")
-            trackIDs = []
-            lyrics = []
-            with open("../data/lyric_data/ancillary_data/train_raw.dat", 'r') as input:
-                for i,line in enumerate(input):
-                    line = line.strip('\n')
-                    temp = line.split(",")
-                    words = temp[2:]
-                    vector = [0]*5000 #dok_matrix((1,5000),dtype=np.int8)
-                    for word in words:
-                        item = word.split(":")
-                        vector[int(item[0])-1] = int(item[1])
-                    lyrics.append(lil_matrix([vector]))
-                    trackIDs.append(temp[0])
-                    print("Reading Raw Train Data Item #{}".format(i+1))
-                    sys.stdout.write(CURSOR_UP_ONE)
-                    sys.stdout.write(ERASE_LINE) 
+            if(not os.path.exists("../data/lyric_data/ancillary_data/train_raw.dat")):
+                print("\nYou must unzip the raw training file in order to regenerate the train data. Place this unzipped file back into '../data/lyric_data/ancillary_data/' \nThis was zipped to circumvent GitHub's file upload size limit.\nThe zipped data file is located inside ../data/lyric_data/ancillary_data/train_raw.zip\n")
+                exit(0)
+            else:    
+                print("Regenerating Pickled Training Data")
+                trackIDs = []
+                lyrics = []
+                with open("../data/lyric_data/ancillary_data/train_raw.dat", 'r') as input:
+                    for i,line in enumerate(input):
+                        line = line.strip('\n')
+                        temp = line.split(",")
+                        words = temp[2:]
+                        vector = [0]*5000 #dok_matrix((1,5000),dtype=np.int8)
+                        for word in words:
+                            item = word.split(":")
+                            vector[int(item[0])-1] = int(item[1])
+                        lyrics.append(lil_matrix([vector]))
+                        trackIDs.append(temp[0])
+                        print("Reading Raw Train Data Item #{}".format(i+1))
+                        sys.stdout.write(CURSOR_UP_ONE)
+                        sys.stdout.write(ERASE_LINE)
             if(reloadGenreMap):
                 print("Regenerating Genre Map.")
                 genremap = read_in_top_genres()
@@ -165,7 +169,7 @@ if __name__ == '__main__':
         reloadtestData = False
     
     if(os.path.exists("../data/lyric_data/train_labels.dat") and os.path.exists("../data/lyric_data/train_tracks.dat") and os.path.exists("../data/lyric_data/ancillary_data/train_track_ids.dat")):
-        reloadTrainData = False
+        reloadTrainData = True
     
     if(os.path.exists("../data/lyric_data/ancillary_data/genremap.dat")):
         reloadGenreMap = False
