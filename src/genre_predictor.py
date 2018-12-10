@@ -108,7 +108,7 @@ class GenrePredictor:
         splits = kf.split(df)
 
         classifier = RandomForestClassifier(n_estimators=250, random_state=0)
-        # classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto', max_iter=300)
+        # classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto')
         # classifier = DecisionTreeClassifier(max_depth=11, max_leaf_no .des=200, random_state=0)
         # classifier = KNeighborsClassifier(n_neighbors=10)
         for result in splits:
@@ -139,7 +139,7 @@ class GenrePredictor:
         genres = pd.DataFrame(self.train_data['genre']).values.reshape(-1, ).tolist()
 
         classifier = RandomForestClassifier(n_estimators=250, random_state=0)
-        # classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto', max_iter=300)
+        # classifier = LogisticRegression(penalty='l1', class_weight=self.class_weights, solver='liblinear', multi_class='auto')
         # classifier = DecisionTreeClassifier(max_depth=11, max_leaf_nodes=200, random_state=0)
         # classifier = KNeighborsClassifier(n_neighbors=10)
 
