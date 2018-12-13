@@ -1,4 +1,4 @@
-# Genre Classifier / Song Recommender
+# Music Genre Classifier
 
 ### Getting started
 
